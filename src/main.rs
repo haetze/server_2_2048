@@ -61,7 +61,8 @@ fn main() {
 
 
 fn handle_messages(command: String, mut field: &mut Option<Field>) -> String{
-        
+
+    // Translates received String to Command
     match command.trim() {
         "right" => handle_command(&mut field, Command::Right),
         "left"  => handle_command(&mut field, Command::Left),
@@ -89,53 +90,69 @@ fn handle_messages(command: String, mut field: &mut Option<Field>) -> String{
 
 fn handle_command(mut field: &mut Option<Field>, command: Command) -> String {
     use std::mem::swap;
-    
-    let tmp_field = field.clone();
 
-    
-    let result_field = tmp_field.and_then(|mut field| {
+    // Clones Field for later comparison
+    // in case of invalid move
+    let mut tmp_field = field.clone();
+
+    // If command is "New Command"
+    // Field is gonna be set
+    // Only match will filter None 's
+    // Because of map
+    match command {
+        Command::New(n) => tmp_field = Some(Field::new(n)),
+        _               => (),
+    };
+
+    // Executes Command
+    let execute_command_field = tmp_field.map(|mut inner_field| {
         match command {
-            Command::New(n) => Some(Field::new(n)),
+            Command::New(n) => inner_field,
             Command::Right  => {
-                field.swipe_right();
-                Some(field)
+                inner_field.swipe_right();
+                inner_field
             },
             Command::Left  => {
-                field.swipe_left();
-                Some(field)
+                inner_field.swipe_left();
+                inner_field
             },
             Command::Up  => {
-                field.swipe_up();
-                Some(field)
+                inner_field.swipe_up();
+                inner_field
             },
             Command::Down  => {
-                field.swipe_down();
-                Some(field)
+                inner_field.swipe_down();
+                inner_field
             },
         }
     });
-    
-    let mut result_field = result_field.map(|mut f| {
+
+    // Compares to old state
+    // If equal then nothing happend because of the Command
+    // and no new number is added
+    let mut result_field = result_field.map(|mut inner_field| {
         match field {
             None => {
-                f.insert_random();
+                inner_field.insert_random();
             },
             Some(field) => {
-                if field != &mut f {
-                    f.insert_random();
+                if field != &mut inner_field {
+                    inner_field.insert_random();
                 }
             },       
-        }
-        f
+        };
+        inner_field
     });
-        
-                
+
        
     swap(&mut result_field, &mut field);
-    print_result(&result_field)
+    print_result(&field)
     
 }
 
+
+// Function that takes a optional Field and return the
+// String representing it.
 fn print_result(field: &Option<Field>) -> String{
     match field {
         None => {
@@ -144,8 +161,11 @@ fn print_result(field: &Option<Field>) -> String{
 
         Some(field) => {
             let mut string = String::new();
+            //Print each row
             for row in &field.rows {
                 let s = format!("{:?}", row.row);
+                // Add row to result String
+                // Add delimiter (;) to String
                 string.push_str(&s);
                 string.push_str(&";");
             }
