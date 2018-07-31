@@ -229,7 +229,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "server_2_2048"
 version = "0.1.0"
 dependencies = [
- "bytes 0.4.9 (registry+https://github.com/rust-lang/crates.io-index)",
  "futures 0.1.23 (registry+https://github.com/rust-lang/crates.io-index)",
  "lib_2048 0.1.0 (git+https://github.com/haetze/lib_2048?rev=a3c1424f3f50847bb63a5fb5c79f9d3ced91d821)",
  "tokio 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",

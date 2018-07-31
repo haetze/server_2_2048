@@ -6,7 +6,7 @@ authors = ["Richard Stewing <richy.sting@gmail.com>"]
 [dependencies]
 futures = "0.1.23"
 tokio = "0.1.7"
-bytes = "0.4.9"
+
 
 [dependencies.lib_2048]
 git = "https://github.com/haetze/lib_2048"
