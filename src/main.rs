@@ -125,7 +125,7 @@ fn handle_command(mut field: &mut Option<Field>, command: Command) -> String {
     // Executes Command
     let execute_command_field = tmp_field.map(|mut inner_field| {
         match command {
-            Command::New(n) => inner_field,
+            Command::New(_) => inner_field,
             Command::Right  => {
                 inner_field.swipe_right();
                 inner_field
