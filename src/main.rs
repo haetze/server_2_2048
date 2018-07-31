@@ -1,3 +1,5 @@
+#![allow(unused_must_use)]
+
 extern crate lib_2048;
 extern crate tokio;
 extern crate futures;
@@ -6,16 +8,13 @@ use lib_2048::data::Field;
 
 use tokio::io;
 use tokio::net::TcpListener;
-use tokio::net::TcpStream;
-use tokio::io::Lines;
-use tokio::io::WriteHalf;
 use tokio::prelude::*;
 
 use futures::future::FutureResult;
 use futures::future::ok;
 
 use std::io::BufReader;
-use std::io::BufRead;
+
 
 use commands::Command;
 
@@ -31,11 +30,12 @@ fn main() {
             let (reader, mut writer) = tcp.split();
             let reader = BufReader::new(reader);
             let mut field = None;
+            
             let conn = io::lines(reader)
                 .and_then(move |line| {
                     let response = handle_messages(line, &mut field);
                     Ok(response)
-                }).and_then(move |mut l| {
+                }).and_then(move |l| {
                     writer.write_all(l.as_bytes());
                     Ok(())
                 })
@@ -43,11 +43,10 @@ fn main() {
                 .map_err(|_| {
                     println!("Error");
                 })
-                
                 .then(|_| -> FutureResult<(), ()> {
-                    ok(()) });
-            
-            
+                    ok(())
+                });            
+
             tokio::spawn(conn);
             
             Ok(())
@@ -88,51 +87,41 @@ fn handle_messages(command: String, mut field: &mut Option<Field>) -> String{
     
 }
 
-fn handle_command(mut field_option: &mut Option<Field>, command: Command) -> String {
+fn handle_command(mut field: &mut Option<Field>, command: Command) -> String {
     use std::mem::swap;
     
-    let mut field = None;
-    swap(&mut field, &mut field_option);
-
     let tmp_field = field.clone();
+
     
-    let result_field = match field {
-        None => {
-            match command {
-                Command::New(n) => Some(Field::new(n)),
-                _               => None,
-            }
-        },
-        Some(mut field) => {
-            match command {
-                Command::New(n) => Some(Field::new(n)),
-                Command::Right  => {
-                    field.swipe_right();
-                    Some(field)
-                },
-                Command::Left  => {
-                    field.swipe_left();
-                    Some(field)
-                },
-                Command::Up  => {
-                    field.swipe_up();
-                    Some(field)
-                },
-                Command::Down  => {
-                    field.swipe_down();
-                    Some(field)
-                },
-            }
-        },
-    };
+    let result_field = tmp_field.and_then(|mut field| {
+        match command {
+            Command::New(n) => Some(Field::new(n)),
+            Command::Right  => {
+                field.swipe_right();
+                Some(field)
+            },
+            Command::Left  => {
+                field.swipe_left();
+                Some(field)
+            },
+            Command::Up  => {
+                field.swipe_up();
+                Some(field)
+            },
+            Command::Down  => {
+                field.swipe_down();
+                Some(field)
+            },
+        }
+    });
     
     let mut result_field = result_field.map(|mut f| {
-        match tmp_field {
+        match field {
             None => {
                 f.insert_random();
             },
             Some(field) => {
-                if field != f {
+                if field != &mut f {
                     f.insert_random();
                 }
             },       
@@ -142,10 +131,9 @@ fn handle_command(mut field_option: &mut Option<Field>, command: Command) -> Str
         
                 
        
+    swap(&mut result_field, &mut field);
+    print_result(&result_field)
     
-    let s = print_result(&result_field);
-    swap(&mut result_field, &mut field_option);
-    s
 }
 
 fn print_result(field: &Option<Field>) -> String{
