@@ -14,23 +14,41 @@ use futures::future::FutureResult;
 use futures::future::ok;
 
 use std::io::BufReader;
-
+use std::env;
+use std::net::SocketAddr;
 
 use commands::Command;
 
 mod commands;
 
-fn main() {  
-    let addr = "127.0.0.1:12345".parse().unwrap();
+const DEFAULT_PORT: u16 = 4343;
+
+fn main() {
+    // Reading arguments for Port to run on
+    let port_requested: u16 = match env::args().skip(1).next() {
+        Some(p) => match p.parse() {
+            Ok(port) => port,
+            Err(_)   => DEFAULT_PORT,
+        },
+        None    => DEFAULT_PORT,
+    };
+    println!("Running on Port: {}", port_requested);
+    
+    let addr = SocketAddr::from(([127, 0, 0, 1], port_requested));
     let tcp = TcpListener::bind(&addr).unwrap();
 
+    println!("Server running");
 
+    // Server Future
     let server = tcp.incoming()
         .for_each(|tcp| {
             let (reader, mut writer) = tcp.split();
             let reader = BufReader::new(reader);
             let mut field = None;
-            
+
+            // Connection Future
+            // Basically a remote REPL
+            // or RREPL
             let conn = io::lines(reader)
                 .and_then(move |line| {
                     let response = handle_messages(line, &mut field);
@@ -130,7 +148,7 @@ fn handle_command(mut field: &mut Option<Field>, command: Command) -> String {
     // Compares to old state
     // If equal then nothing happend because of the Command
     // and no new number is added
-    let mut result_field = result_field.map(|mut inner_field| {
+    let mut result_field = execute_command_field.map(|mut inner_field| {
         match field {
             None => {
                 inner_field.insert_random();
