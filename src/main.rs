@@ -53,8 +53,7 @@ fn main() {
                     let response = handle_messages(line, &mut field);
                     Ok(response)
                 }).and_then(move |l| {
-                    writer.write_all(l.as_bytes());
-                    Ok(())
+                    writer.write_all(l.as_bytes())
                 })
                 .for_each(|_| ok(()))
                 .map_err(|_| {
