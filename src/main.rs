@@ -51,7 +51,7 @@ fn main() {
             let conn = io::lines(reader)
                 .and_then(move |line| {
                     let response = handle_messages(line, &mut field);
-                    Ok(response)
+                    ok(response)
                 }).and_then(move |l| {
                     writer.write_all(l.as_bytes())
                 })
