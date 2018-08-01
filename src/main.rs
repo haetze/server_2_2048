@@ -201,7 +201,7 @@ fn print_result(field: &Option<Field>) -> String{
                 field == &copy_left  &&
                 field == &copy_up    &&
                 field == &copy_down  {
-                    return "Lost".to_string();
+                    return "Lost\n".to_string();
                 }
          
             //Print each row
