@@ -180,6 +180,7 @@ fn handle_command(mut field: &mut Option<Field>, command: Command) -> String {
 // Function that takes a optional Field and return the
 // String representing it.
 fn print_result(field: &Option<Field>) -> String{
+    
     match field {
         None => {
             "Empty\n".to_string()
@@ -187,6 +188,22 @@ fn print_result(field: &Option<Field>) -> String{
 
         Some(field) => {
             let mut string = String::new();
+            let mut copy_up = field.clone();
+            copy_up.swipe_up();
+            let mut copy_down = field.clone();
+            copy_down.swipe_down();
+            let mut copy_right = field.clone();
+            copy_right.swipe_right();
+            let mut copy_left = field.clone();
+            copy_left.swipe_left();
+
+            if  field == &copy_right &&
+                field == &copy_left  &&
+                field == &copy_up    &&
+                field == &copy_down  {
+                    return "Lost".to_string();
+                }
+         
             //Print each row
             for row in &field.rows {
                 let s = format!("{:?}", row.row);
