@@ -13,6 +13,6 @@ In all cases the directions says which direction the slide is going in. For exam
 Stops the game.
 ### Messages you receive 
 * "Empty\n", no game has been started 
-* "Lost\n", the game is over and you can't make a move any more.
+* "Lost n\n", the game is over and you can't make a move any more. n is the number of points achieved.
 * [None...];....;[None..];
 Messages that represent the state of the game board.  None means the field is empty. Some(n) means n is on the board at that plays.
