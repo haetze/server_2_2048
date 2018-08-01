@@ -37,14 +37,17 @@ fn main() {
     let tcp = TcpListener::bind(&addr).unwrap();
 
     println!("Server running");
-
+    let mut connection_count = 0;
     // Server Future
     let server = tcp.incoming()
-        .for_each(|tcp| {
+        .for_each(move |tcp| {
+            connection_count = connection_count + 1;
+            let current_connection_number = connection_count;
+            println!("Connection #{} opened", connection_count);
             let (reader, mut writer) = tcp.split();
             let reader = BufReader::new(reader);
             let mut field = None;
-
+            
             // Connection Future
             // Basically a remote REPL
             // or RREPL
@@ -56,6 +59,10 @@ fn main() {
                     writer.write_all(l.as_bytes())
                 })
                 .for_each(|_| ok(()))
+                .and_then(move |_| {
+                    println!("Connection #{} closed", current_connection_number);
+                    ok(())
+                })
                 .map_err(|_| {
                     println!("Error");
                 });
