@@ -41,7 +41,9 @@ fn main() {
     // Server Future
     let server = tcp.incoming()
         .for_each(move |tcp| {
+            // Adds one to the connection counter
             connection_count = connection_count + 1;
+            // Copys the current state over in a local variable
             let current_connection_number = connection_count;
             println!("Connection #{} opened", connection_count);
             let (reader, mut writer) = tcp.split();
@@ -58,8 +60,11 @@ fn main() {
                 }).and_then(move |l| {
                     writer.write_all(l.as_bytes())
                 })
-                .for_each(|_| ok(()))
+                .for_each(|_| ok(())) // Collects the whole stream til the end
                 .and_then(move |_| {
+                    // Prints that the collection is closed
+                    // This works because for_each only returns when stream
+                    // Is completely handled, so only when Stream is done
                     println!("Connection #{} closed", current_connection_number);
                     ok(())
                 })
