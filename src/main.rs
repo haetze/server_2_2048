@@ -10,7 +10,6 @@ use tokio::io;
 use tokio::net::TcpListener;
 use tokio::prelude::*;
 
-use futures::future::FutureResult;
 use futures::future::ok;
 
 use std::io::BufReader;
@@ -60,10 +59,8 @@ fn main() {
                 .for_each(|_| ok(()))
                 .map_err(|_| {
                     println!("Error");
-                })
-                .then(|_| -> FutureResult<(), ()> {
-                    ok(())
-                });            
+                });
+                
 
             tokio::spawn(conn);
             
