@@ -201,7 +201,7 @@ fn print_result(field: &Option<Field>) -> String{
                 field == &copy_left  &&
                 field == &copy_up    &&
                 field == &copy_down  {
-                    return "Lost\n".to_string();
+                    return format!("Lost {}\n", calc_value(field)).to_string();
                 }
          
             //Print each row
@@ -218,3 +218,14 @@ fn print_result(field: &Option<Field>) -> String{
     }
 }
 
+fn calc_value(field: &Field) -> usize {
+    let mut sum = 0;
+    for row in &field.rows {
+        for cell in &row.row {
+            if let Some(value) = cell {
+                sum = sum + value;
+            }
+        }
+    }
+    return sum;
+}
