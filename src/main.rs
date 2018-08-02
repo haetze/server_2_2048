@@ -157,17 +157,13 @@ fn handle_command(mut field: &mut Option<Field>, command: Command) -> String {
     // If equal then nothing happend because of the Command
     // and no new number is added
     let mut result_field = execute_command_field.map(|mut inner_field| {
-        match field {
-            None => {
-                inner_field.insert_random();
-            },
-            Some(field) => {
-                if field != &mut inner_field {
-                    inner_field.insert_random();
-                }
-            },       
-        };
-        inner_field
+        if let Some(field) = field {
+            if field == &mut inner_field {
+                return inner_field;
+            }
+        }
+        inner_field.insert_random();
+        return inner_field;
     });
 
        
