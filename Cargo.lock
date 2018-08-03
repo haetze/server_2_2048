@@ -118,7 +118,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "lib_2048"
 version = "0.1.0"
-source = "git+https://github.com/haetze/lib_2048?rev=a3c1424f3f50847bb63a5fb5c79f9d3ced91d821#a3c1424f3f50847bb63a5fb5c79f9d3ced91d821"
+source = "git+https://github.com/haetze/lib_2048?rev=83fdd8e5ab7c0f5e15588cae155e0726dc7ba5d1#83fdd8e5ab7c0f5e15588cae155e0726dc7ba5d1"
 dependencies = [
  "rand 0.5.4 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -230,7 +230,7 @@ name = "server_2_2048"
 version = "0.1.0"
 dependencies = [
  "futures 0.1.23 (registry+https://github.com/rust-lang/crates.io-index)",
- "lib_2048 0.1.0 (git+https://github.com/haetze/lib_2048?rev=a3c1424f3f50847bb63a5fb5c79f9d3ced91d821)",
+ "lib_2048 0.1.0 (git+https://github.com/haetze/lib_2048?rev=83fdd8e5ab7c0f5e15588cae155e0726dc7ba5d1)",
  "tokio 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -411,7 +411,7 @@ dependencies = [
 "checksum kernel32-sys 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "7507624b29483431c0ba2d82aece8ca6cdba9382bff4ddd0f7490560c056098d"
 "checksum lazy_static 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "fb497c35d362b6a331cfd94956a07fc2c78a4604cdbee844a81170386b996dd3"
 "checksum lazycell 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "a6f08839bc70ef4a3fe1d566d5350f519c5912ea86be0df1740a7d247c7fc0ef"
-"checksum lib_2048 0.1.0 (git+https://github.com/haetze/lib_2048?rev=a3c1424f3f50847bb63a5fb5c79f9d3ced91d821)" = "<none>"
+"checksum lib_2048 0.1.0 (git+https://github.com/haetze/lib_2048?rev=83fdd8e5ab7c0f5e15588cae155e0726dc7ba5d1)" = "<none>"
 "checksum libc 0.2.42 (registry+https://github.com/rust-lang/crates.io-index)" = "b685088df2b950fccadf07a7187c8ef846a959c142338a48f9dc0b94517eb5f1"
 "checksum log 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)" = "61bd98ae7f7b754bc53dca7d44b604f733c6bba044ea6f41bc8d89272d8161d2"
 "checksum memoffset 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "0f9dc261e2b62d7a622bf416ea3c5245cdd5d9a7fcc428c0d06804dfce1775b3"

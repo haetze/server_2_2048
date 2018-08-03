@@ -201,8 +201,8 @@ fn print_result(field: &Option<Field>) -> String{
                 }
          
             //Print each row
-            for row in &field.rows {
-                let s = format!("{:?}", row.row);
+            for row in field.rows() {
+                let s = format!("{:?}", row.row());
                 // Add row to result String
                 // Add delimiter (;) to String
                 string.push_str(&s);
@@ -216,8 +216,8 @@ fn print_result(field: &Option<Field>) -> String{
 
 fn calc_value(field: &Field) -> usize {
     let mut sum = 0;
-    for row in &field.rows {
-        for cell in &row.row {
+    for row in field.rows() {
+        for cell in row.row() {
             if let Some(value) = cell {
                 sum = sum + value;
             }
