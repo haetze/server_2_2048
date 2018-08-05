@@ -17,6 +17,9 @@ use std::io::BufReader;
 use std::env;
 use std::net::SocketAddr;
 
+// use std::thread;
+// use std::time::Duration;
+
 use commands::Command;
 
 mod commands;
@@ -74,6 +77,9 @@ fn handle_connection(tcp: TcpStream, current_connection_number: u32) -> impl Fut
     let conn = io::lines(reader)
         .and_then(move |line| {
             let response = handle_messages(line, &mut field);
+            // Uncommenting the following line shows that even when a thread is holding up the
+            // queue other processes are still handled
+            // thread::sleep(Duration::from_millis((current_connection_number * 1000).into()));
             ok(response)
         }).and_then(move |l| {
             writer.write_all(l.as_bytes())
