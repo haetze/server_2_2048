@@ -8,6 +8,7 @@ use lib_2048::data::Field;
 
 use tokio::io;
 use tokio::net::TcpListener;
+use tokio::net::TcpStream;
 use tokio::prelude::*;
 
 use futures::future::ok;
@@ -46,34 +47,7 @@ fn main() {
             // Copys the current state over in a local variable
             let current_connection_number = connection_count;
             println!("Connection #{} opened", connection_count);
-            let (reader, mut writer) = tcp.split();
-            let reader = BufReader::new(reader);
-            let mut field = None;
-            
-            // Connection Future
-            // Basically a remote REPL
-            // or RREPL
-            let conn = io::lines(reader)
-                .and_then(move |line| {
-                    let response = handle_messages(line, &mut field);
-                    ok(response)
-                }).and_then(move |l| {
-                    writer.write_all(l.as_bytes())
-                })
-                .for_each(|_| ok(())) // Collects the whole stream til the end
-                .and_then(move |_| {
-                    // Prints that the collection is closed
-                    // This works because for_each only returns when stream
-                    // Is completely handled, so only when Stream is done
-                    println!("Connection #{} closed", current_connection_number);
-                    ok(())
-                })
-                .map_err(|_| {
-                    println!("Error");
-                });
-                
-
-            tokio::spawn(conn);
+            tokio::spawn(handle_connection(tcp, current_connection_number));
             
             Ok(())
         })
@@ -83,6 +57,36 @@ fn main() {
     
     // Start the runtime and spin up the server
     tokio::run(server);
+}
+
+fn handle_connection(tcp: TcpStream, current_connection_number: u32) -> impl Future<Item = (), Error = ()>{
+    let (reader, mut writer) = tcp.split();
+    let reader = BufReader::new(reader);
+    let mut field = None;
+    
+    // Connection Future
+    // Basically a remote REPL
+    // or RREPL
+    let conn = io::lines(reader)
+        .and_then(move |line| {
+            let response = handle_messages(line, &mut field);
+            ok(response)
+        }).and_then(move |l| {
+            writer.write_all(l.as_bytes())
+        })
+        .for_each(|_| ok(())) // Collects the whole stream til the end
+        .and_then(move |_| {
+            // Prints that the collection is closed
+            // This works because for_each only returns when stream
+            // Is completely handled, so only when Stream is done
+            println!("Connection #{} closed", current_connection_number);
+            ok(())
+        })
+        .map_err(|_| {
+            println!("Error");
+        });
+    return conn;
+
 }
 
 
