@@ -25,13 +25,7 @@ const DEFAULT_PORT: u16 = 4343;
 
 fn main() {
     // Reading arguments for Port to run on
-    let port_requested: u16 = match env::args().skip(1).next() {
-        Some(p) => match p.parse() {
-            Ok(port) => port,
-            Err(_)   => DEFAULT_PORT,
-        },
-        None    => DEFAULT_PORT,
-    };
+    let port_requested: u16 = get_port();
     println!("Running on Port: {}", port_requested);
     
     let addr = SocketAddr::from(([127, 0, 0, 1], port_requested));
@@ -57,6 +51,16 @@ fn main() {
     
     // Start the runtime and spin up the server
     tokio::run(server);
+}
+
+fn get_port() -> u16 {
+    match env::args().skip(1).next() {
+        Some(p) => match p.parse() {
+            Ok(port) => port,
+            Err(_)   => DEFAULT_PORT,
+        },
+        None    => DEFAULT_PORT,
+    }
 }
 
 fn handle_connection(tcp: TcpStream, current_connection_number: u32) -> impl Future<Item = (), Error = ()>{
@@ -85,6 +89,7 @@ fn handle_connection(tcp: TcpStream, current_connection_number: u32) -> impl Fut
         .map_err(|_| {
             println!("Error");
         });
+    
     return conn;
 
 }
